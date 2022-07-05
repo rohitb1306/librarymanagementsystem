@@ -1,7 +1,4 @@
-
-from dbm.ndbm import library
-from hashlib import algorithms_available
-import libmanagment.Book as Book
+import Book
 
 class Library:
     admin_code=""
