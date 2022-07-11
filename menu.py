@@ -47,7 +47,7 @@ while(True):
                 print(obj.issuebook(name,type,date))
             elif number==3:
                 id=int(input("enter the id of the book that you issued\n"))
-                date=input("date of book returning in dd-mm-yyyy format\n")
+                date=input("date of book returning in yyyy-mm-dd format\n")
                 print(obj.returbook(id,date))
             elif number==4:
                 print(obj.see_profile())

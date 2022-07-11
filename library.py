@@ -1,144 +1,147 @@
 import Book
 
+
 class Library:
-    admin_code=""
-    books=[]
-    changable_book=[]
-    same_book={}
-    issued_books={}
-    for i in range(5):
-        book=Book.books1("the old book of baby names","novel","Anees Salim","2021")
-        books.append(book)
-        changable_book.append(book)
-        if i==0:
-            same_book["the old book of baby names"]=[5,"2021","Anees Salim","novel"]
-    
+    admin_code = ""
+    books = []
+    changable_book = []
+    same_book = {}
+    issued_books = {}
+    ls1 = []
+    b = []
+    num = 1001
 
     @staticmethod
-    def add_book(name,type,writer,year,number_of_books):
+    def add_book(name, type, writer, year, number_of_books):
         for i in range(number_of_books):
-            obj=Book.books1(name,type,writer,year)
+            obj = Book.books1(name, type, writer, year)
             Library.books.append(obj)
             Library.changable_book.append(obj)
-            if i==0:
-                Library.same_book[name]=[number_of_books,year,writer,type]
+            if i == 0:
+                Library.same_book[name] = [number_of_books, year, writer, type]
+        return "book added sucessfully"
+
     @staticmethod
-    def remove_book(id):
-        c=0
+    def remove_book(id, name):
+        c = 0
+
         for i in Library.changable_book:
-            if i.book_number==id:
+            
+            if i.book_number == id:
                 Library.books.remove(i)
                 Library.changable_book.remove(i)
-                Library.same_book[i.name][0]-=1
-                c=1
-        if c==1:
-            return f"book removed by number {id}"
+                Library.same_book[name][0] -= 1
+
+                c = 1
+        if c == 1:
+            return f"book number={id} removed"
         else:
             return f"could not find the book by number {id}"
-    @classmethod
-    def show_book(cls,str1):
-        if str1=="admin":
-            b=[]
-            for i in cls.changable_book:
-                b.append((i.name,i.type,i.writer,i.year_of_printing,i.book_number))
-            return (b)
-        elif str1=="Reader":
-            b={}
-            for i,j in cls.same_book.items():
-                b[i]=j
-            return (cls.same_book)
-        # else:
 
-        #     b=[]
-        #     for i in cls.books:
-        #         b.append((i.name,i.type,i.writer,i.year_of_printing,i.book_number))
-        #     return (b)
-    
+    @classmethod
+    def show_book(cls, str1):
+        if str1 == "admin":
+            cls.b = []
+            for i in cls.changable_book:
+                cls.b.append((i.name, i.type, i.writer,
+                             i.year_of_printing, i.book_number))
+            return (cls.b)
+        elif str1 == "Reader":
+            return (cls.same_book)
+
     @staticmethod
     def seemulti_profile():
-        set1=[]
+        Library.ls1 = []
         for i in reader.readers:
-            set1.append({"name":i.name,"id":i.id,"booksissued":i.booksissued,"fine":i.fine})
-        return set1
-class reader(Library):
-    idnum=100
-    readers=[]
-    def __init__(self,name,contact,address,password):
-        self.name=name
-        self.contact=contact
-        self.address=address
-        self.password=password
-        self.id=reader.idnum
-        self.booksissued={}
-        self.fine=0.0
-        reader.idnum+=1
-    
-    
-    
+            Library.ls1.append({"name": i.name, "id": i.id,"booksissued": i.booksissued, "fine": i.fine})
+        return Library.ls1
 
-    def issuebook(self,name,writer,date):
-        c=0
+
+class reader(Library):
+    idnum = 101
+    readers = []
+    b = []
+
+    def __init__(self, name, mail, address, password):
+        self.name = name
+        self.mail = mail
+        self.address = address
+        self.password = password
+        self.id = reader.idnum
+        self.booksissued = {}
+        self.fine = 0.0
+        reader.idnum += 1
+
+    def issuebook(self, name, type, date):
+        c = 0
         for i in Library.changable_book:
-            if name!=i.name  and writer!=i.writer:
-                continue
-            else:
-                self.booksissued[i.book_number]=date
-                Library.issued_books[i.book_number]=self.name
-                a=Library.changable_book.index(i)
+            if name == i.name and type == i.type:
+                self.booksissued[i.book_number] = date
+                Library.issued_books[i.book_number] = self.name
+                a = Library.changable_book.index(i)
                 Library.changable_book.pop(a)
                 for j in Library.same_book.keys():
-                    if j==i.name:
-                        Library.same_book[j][0]-=1
-                c=1
-
+                    if j == i.name:
+                        Library.same_book[j][0] -= 1
+                c = 1
                 return f"book {i.book_number} issued "
-        if c==0:
+        if c == 0:
             return "book not available"
 
-    def returbook(self,id,date):
-        c=0
+    def returbook(self, id1, date):
+        c = 0
         for i in Library.books:
-            if id==i.book_number:
+            if id1 in Library.issued_books.keys() and id1 == i.book_number:
                 for j in Library.same_book.keys():
-                    if j==i.name:
-                        Library.same_book[j][0]+=1
-                if Book.date.dat_minus_date(date=date,date1=self.booksissued[id])>15:
-                    self.fine=5*(Book.date.dat_minus_date(date1=self.booksissued[id],date=date)-15)
-                    self.booksissued.pop(i.book_number)
+                    if j == i.name:
+                        Library.same_book[j][0] += 1
+                if Book.date.dat_minus_date(date=date, date1=self.booksissued[id1]) > 15:
+                    self.fine = 5 * \
+                        (Book.date.dat_minus_date(
+                            date1=self.booksissued[id1], date=date)-15)
+                    temp = self.booksissued[id1]
+                    self.booksissued.pop(id1)
                     Library.changable_book.append(i)
                     Library.issued_books.pop(i.book_number)
-                    return f"one book returned fine={self.fine}"
-                elif Book.date.dat_minus_date(date1=self.booksissued[id],date=date)==-1:
-                    self.fine=100
-                    return f"book returned{self.fine}"
-                elif Book.date.dat_minus_date(date1=self.booksissued[id],date=date)==-2:
-                    self.fine=1000
-                    return f"book returned{self.fine}"
-                elif Book.date.dat_minus_date(date1=self.booksissued[id],date=date)==-3:
-                    return f"wrong date"
-                elif Book.date.dat_minus_date(date1=self.booksissued[id],date=date)==-4:
-                    self.fine=1000
-                    return f"book returned{self.fine}"
+                    return f"book returned fine={self.fine} return={date} issuing={temp}"
+                elif Book.date.dat_minus_date(date1=self.booksissued[id1], date=date) == -1:
+                    self.fine = 100
+                    temp = self.booksissued[id1]
+                    self.booksissued.pop(id1)
+                    Library.changable_book.append(i)
+                    Library.issued_books.pop(i.book_number)
+                    return f"book returned fine={self.fine} return={date} issuing={self.booksissued[id1]}"
+                elif Book.date.dat_minus_date(date1=self.booksissued[id1], date=date) == -2:
+                    self.fine = 1000
+                    temp = self.booksissued[id1]
+                    self.booksissued.pop(id1)
+                    Library.changable_book.append(i)
+                    Library.issued_books.pop(i.book_number)
+                    return f"book returned fine={self.fine} return={date} issuing={temp}"
+                elif Book.date.dat_minus_date(date1=self.booksissued[id1], date=date) == -3:
+                    return f"wrong date return={date} issuing={self.booksissued[id1]}"
                 else:
-                    self.booksissued.pop(i.book_number)
+                    temp = self.booksissued[id1]
+                    self.booksissued.pop(id1)
                     Library.changable_book.append(i)
                     Library.issued_books.pop(i.book_number)
-                    return f"one book returned fine={self.fine}"
-                c=1
-        if c==0:
-            return "wrong book"           
 
+                    return f"book returned fine={self.fine} return={date} issuing={temp}"
+                c = 1
+        if c == 0:
+            return f"book number ={id1} not found"
 
     def see_profile(self):
         return f"name={self.name}\nid={self.id}\nbooksissued={self.booksissued}\nfine={self.fine}"
-    
-    def searchbooks(self,str1):
-        b=[]
+
+    def searchbooks(self, str1):
+        reader.b = []
+        c=0
         for i in Library.books:
-            if i.name==str1:
-                b.append((i.name,i.type,i.writer,i.year_of_printing,i.book_number))
-        return (b,len(b))
-# Library.add_book("let us c","programming","deepak","2022",10)  
-# ru=reader("rohit","1234","1234","1234")
-# print(ru.issuebook("let us c","deepak","13-06-2022"))     
-# print(Library.changable_book)
+            if i.name == str1:
+                reader.b.append((i.name, i.type, i.writer,i.year_of_printing, i.book_number))
+                c=1
+        if c==1:
+            return (reader.b, len(reader.b))
+        else:
+            return "no result found"
